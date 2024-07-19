@@ -194,7 +194,7 @@ const PaymentPage = () => {
                     </div>
                     <div className="form-group d-flex justify-content-end mt-3">
                       <Button type="submit" variant="primary" className="btn-primary">
-                        Make Payment
+                        Submit
                       </Button>
                     </div>
                   </div>

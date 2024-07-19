@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import Navbar from '../components/Navbar';
 import Card from '../components/Card';
 import Chart from 'chart.js/auto';
-import videoSrc from '../pages/night.mp4'; // Import the video
 
 const DashboardPage = () => {
   const [adminCount, setAdminCount] = useState(0);
@@ -235,48 +234,39 @@ const DashboardPage = () => {
   return (
     <>
       <Navbar />
-      <div style={{ position: 'relative', minHeight: '100vh' }}>
-        <video autoPlay loop muted className="background-video" style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: '100%',
-          objectFit: 'cover',
-          zIndex: -1,
-          overflow: 'hidden',
-        }}>
-          <source src={videoSrc} type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
-        <div style={{ position: 'relative', zIndex: 1, padding: '20px' }}>
-          <div className="container">
-            <div className="card bg-dark text-white py-2 mb-3 text-start p-3">
-              <h4>Welcome to Dashboard</h4>
+      <div style={{ backgroundColor: '#f5f5f5', padding: '20px' }}>
+        <div className="container">
+          <div className="card bg-dark text-white py-2 mb-3 text-start p-3">
+            <h4>Welcome to Dashboard</h4>
+          </div>
+          <div className="card bg-white text-dark py-2 mb-3 text-start p-4 mt-4">
+            <div className="row mt-4">
+              <div className="col-md-4">
+                <Card header="Admins" count={adminCount} color="danger" />
+              </div>
+              <div className="col-md-4">
+                <Card header="Trainers" count={trainerCount} color="warning" />
+              </div>
+              <div className="col-md-4">
+                <Card header="Trainees" count={traineeCount} color="primary" />
+              </div>
             </div>
-            <div className="card bg-white text-dark py-2 mb-3 text-start p-4 mt-4">
-              <div className="row mt-4">
-                <div className="col-md-4">
-                  <Card header="Admins" count={adminCount} color="danger" />
-                </div>
-                <div className="col-md-4">
-                  <Card header="Trainers" count={trainerCount} color="warning" />
-                </div>
-                <div className="col-md-4">
-                  <Card header="Trainees" count={traineeCount} color="primary" />
+          </div>
+          <div className="row">
+            <div className="col-md-6">
+              <div className="card bg-white text-dark py-2 mb-3 p-4">
+                <h5 className="text-center mb-4"><strong>City Wise Counts</strong></h5>
+                <div style={{ position: 'relative', height: '300px' }}>
+                  <canvas ref={chartRef} />
                 </div>
               </div>
             </div>
-            <div className="card bg-white text-dark py-2 mb-3 p-4">
-              <h5 className="text-center mb-4"><strong>City Wise Counts</strong></h5>
-              <div style={{ position: 'relative', height: '400px' }}>
-                <canvas ref={chartRef} />
-              </div>
-            </div>
-            <div className="card bg-white text-dark py-2 mb-3 p-4">
-              <h5 className="text-center mb-4"><strong>Monthly Payments</strong></h5>
-              <div style={{ position: 'relative', height: '400px' }}>
-                <canvas ref={donutChartRef} />
+            <div className="col-md-6">
+              <div className="card bg-white text-dark py-2 mb-3 p-4">
+                <h5 className="text-center mb-4"><strong>Monthly Payments</strong></h5>
+                <div style={{ position: 'relative', height: '300px' }}>
+                  <canvas ref={donutChartRef} />
+                </div>
               </div>
             </div>
           </div>
@@ -284,6 +274,7 @@ const DashboardPage = () => {
       </div>
     </>
   );
+  
 };
 
 export default DashboardPage;

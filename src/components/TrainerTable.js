@@ -8,7 +8,7 @@ const TrainerTable = ({ trainers, onDelete }) => {
 
   return (
     <div className="container ml-3 mr-3">
-      <table className="table table-bordered mt-5">
+      <table className="table table-bordered mt-5 table-striped">
         <thead className="thead-dark">
           <tr>
             <th>Trainer ID</th>

@@ -287,7 +287,7 @@ const TraineesPage = () => {
                   <div className="form-group d-flex justify-content-end mt-3">
                     <Button type="reset" variant="danger" onClick={handleReset} className="mx-2">Reset</Button>
                     <div className='mx-2'></div>
-                    <Button type="submit" variant="success" className="mx-2">Submit</Button>
+                    <Button type="submit" variant="primary" className="mx-2">Submit</Button>
                   </div>
                 </form>
               </div>
