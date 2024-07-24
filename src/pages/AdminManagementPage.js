@@ -1,11 +1,11 @@
-// AdminManagementPage.js
-
 import React, { useState, useEffect } from 'react';
 import Navbar from '../components/Navbar';
 import TextField from '../components/TextField';
 import Button from '../components/Button';
 import Table from '../components/Table';
-
+import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
+import { toast, ToastContainer } from 'react-toastify'; // Importing Toast notifications
+import 'react-toastify/dist/ReactToastify.css'; // Import Toast styles
 
 const AdminManagementPage = () => {
   const [adminName, setAdminName] = useState('');
@@ -28,13 +28,12 @@ const AdminManagementPage = () => {
     setCity('');
     setPassword('');
   };
- 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (admins.some(admin => admin.adminId === adminId)) {
-      alert('Admin ID already exists. Please choose a different Admin ID.');
+      toast.error('Admin ID already exists. Please choose a different Admin ID.'); // Changed to toast notification
       return;
     }
 
@@ -54,9 +53,10 @@ const AdminManagementPage = () => {
       const newAdmin = await response.json();
       setAdmins([...admins, newAdmin]);
       handleReset();
+      toast.success('Admin added successfully'); // Added toast notification for successful addition
     } catch (error) {
       console.error('Error adding admin:', error);
-      alert('Failed to add admin. Please try again.');
+      toast.error('Failed to add admin. Please try again.'); // Changed to toast notification
     }
   };
 
@@ -71,9 +71,10 @@ const AdminManagementPage = () => {
       }
 
       setAdmins(admins.filter(admin => admin._id !== adminId));
+      toast.success('Admin deleted successfully'); // Added toast notification for successful deletion
     } catch (error) {
       console.error('Error deleting admin:', error);
-      alert('Failed to delete admin. Please try again.');
+      toast.error('Failed to delete admin. Please try again.'); // Changed to toast notification
     }
   };
 
@@ -109,6 +110,7 @@ const AdminManagementPage = () => {
   return (
     <>
       <Navbar />
+      <ToastContainer /> {/* Add ToastContainer to render toast notifications */}
       <div className="container-fluid bg-light min-vh-100 d-flex flex-column align-items-center p-0">
         <div className="container-fluid w-75 p-3">
           <div className="row">
@@ -120,7 +122,7 @@ const AdminManagementPage = () => {
                 <form onSubmit={handleSubmit}>
                   <div className="row mb-3">
                     <div className="col-md-6">
-                      <label  htmlFor="adminName" className="text-start d-block"><strong>Admin Name</strong></label>
+                      <label htmlFor="adminName" className="text-start d-block"><strong>Admin Name</strong></label>
                       <TextField
                         type="text"
                         id="adminName"
@@ -193,16 +195,16 @@ const AdminManagementPage = () => {
                     <label htmlFor="limit" className="mr-2"><strong>Show</strong></label>
                     <div className='mx-2'></div>
                     <select
-                  id="limit"
-                  onChange={handleLimitChange}
-                  value={limit}
-                  className="form-select w-auto"
-                >
-                  <option value={5}>5</option>
-                  <option value={10}>10</option>
-                  <option value={20}>20</option>
-                  <option value={'All'}>All</option>
-                </select>
+                      id="limit"
+                      onChange={handleLimitChange}
+                      value={limit}
+                      className="form-select w-auto"
+                    >
+                      <option value={5}>5</option>
+                      <option value={10}>10</option>
+                      <option value={20}>20</option>
+                      <option value={'All'}>All</option>
+                    </select>
                   </div>
                 </div>
                 <Table admins={admins} onDelete={handleDelete} />
@@ -210,7 +212,9 @@ const AdminManagementPage = () => {
                   <nav aria-label="Admin Pagination">
                     <ul className="pagination mb-0">
                       <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
-                        <button className="page-link" onClick={() => handlePageChange(currentPage - 1)}>Previous</button>
+                        <button className="page-link" onClick={() => handlePageChange(currentPage - 1)}>
+                          <FaArrowLeft /> {/* Left arrow icon */}
+                        </button>
                       </li>
                       {Array.from({ length: totalPages }, (_, index) => (
                         <li key={index} className={`page-item ${currentPage === index + 1 ? 'active' : ''}`}>
@@ -218,7 +222,9 @@ const AdminManagementPage = () => {
                         </li>
                       ))}
                       <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
-                        <button className="page-link" onClick={() => handlePageChange(currentPage + 1)}>Next</button>
+                        <button className="page-link" onClick={() => handlePageChange(currentPage + 1)}>
+                          <FaArrowRight /> {/* Right arrow icon */}
+                        </button>
                       </li>
                     </ul>
                   </nav>

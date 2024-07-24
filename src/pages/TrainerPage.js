@@ -3,6 +3,9 @@ import TextField from '../components/TextField';
 import Button from '../components/Button';
 import TrainerTable from '../components/TrainerTable';
 import Navbar from '../components/Navbar';
+import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'; // Import the CSS for toastify
 
 const TrainerPage = () => {
   const [trainerId, setTrainerId] = useState('');
@@ -22,23 +25,18 @@ const TrainerPage = () => {
 
   const handleCnicChange = (e) => {
     let value = e.target.value;
-  
-    // Restrict input to maximum 13 characters
     if (value.length > 13) {
       value = value.slice(0, 13);
     }
-  
-    // Update state with the restricted CNIC
     setCnic(value);
   };
-  
+
   const handlePhoneNoChange = (e) => {
     const value = e.target.value;
-    // Phone number length validation (maximum 11 digits)
     if (value.length <= 11 || value === '') {
       setPhoneNo(value);
     } else {
-      alert('Please Enter a Valid Phone Number');
+      toast.error('Please Enter a Valid Phone Number');
     }
   };
 
@@ -60,7 +58,7 @@ const TrainerPage = () => {
     e.preventDefault();
 
     if (trainers.some(trainer => trainer.trainerId === trainerId)) {
-      alert('Trainer ID already exists. Please choose a different Trainer ID.');
+      toast.error('Trainer ID already exists. Please choose a different Trainer ID.');
       return;
     }
 
@@ -80,9 +78,10 @@ const TrainerPage = () => {
       const newTrainer = await response.json();
       setTrainers([...trainers, newTrainer]);
       handleReset();
+      toast.success('Trainer added successfully');
     } catch (error) {
       console.error('Error adding trainer:', error);
-      alert('Failed to add trainer. Please try again.');
+      toast.error('Failed to add trainer. Please try again.');
     }
   };
 
@@ -96,10 +95,11 @@ const TrainerPage = () => {
         throw new Error('Failed to delete Trainer');
       }
 
-      setTrainers(trainers.filter(trainer => trainer._id !== trainerId)); // Assuming trainer._id is used for trainer ID
+      setTrainers(trainers.filter(trainer => trainer._id !== trainerId));
+      toast.success('Trainer deleted successfully');
     } catch (error) {
       console.error('Error deleting trainer:', error);
-      alert('Failed to delete trainer. Please try again.');
+      toast.error('Failed to delete trainer. Please try again.');
     }
   };
 
@@ -115,6 +115,7 @@ const TrainerPage = () => {
       setCurrentPage(page);
     } catch (error) {
       console.error('Error fetching trainers:', error);
+      toast.error('Failed to fetch trainers. Please try again.');
     }
   };
 
@@ -131,6 +132,7 @@ const TrainerPage = () => {
     setLimit(selectedLimit);
     fetchTrainers(currentPage, selectedLimit);
   };
+
 
   return (
     <>
@@ -273,7 +275,9 @@ const TrainerPage = () => {
                   <nav aria-label="Trainer Pagination">
                     <ul className="pagination mb-0">
                       <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
-                        <button className="page-link" onClick={() => handlePageChange(currentPage - 1)}>Previous</button>
+                        <button className="page-link" onClick={() => handlePageChange(currentPage - 1)}>
+                          <FaArrowLeft /> {/* Left arrow icon */}
+                        </button>
                       </li>
                       {Array.from({ length: totalPages }, (_, index) => (
                         <li key={index} className={`page-item ${currentPage === index + 1 ? 'active' : ''}`}>
@@ -281,7 +285,9 @@ const TrainerPage = () => {
                         </li>
                       ))}
                       <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
-                        <button className="page-link" onClick={() => handlePageChange(currentPage + 1)}>Next</button>
+                        <button className="page-link" onClick={() => handlePageChange(currentPage + 1)}>
+                          <FaArrowRight /> {/* Right arrow icon */}
+                        </button>
                       </li>
                     </ul>
                   </nav>
@@ -291,6 +297,7 @@ const TrainerPage = () => {
           </div>
         </div>
       </div>
+      <ToastContainer />
     </>
   );
 };

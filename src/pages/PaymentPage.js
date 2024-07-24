@@ -5,6 +5,8 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import Button from '../components/Button';
 import PaymentTable from '../components/PaymentTable';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const PaymentPage = () => {
   const [trainees, setTrainees] = useState([]);
@@ -30,6 +32,7 @@ const PaymentPage = () => {
     } catch (error) {
       console.error('Error fetching trainees:', error);
       setError('Failed to fetch trainees. Please try again.');
+      toast.error('Failed to fetch trainees. Please try again.');
     }
   };
 
@@ -44,30 +47,31 @@ const PaymentPage = () => {
     } catch (error) {
       console.error('Error fetching payments:', error);
       setError('Failed to fetch payments. Please try again.');
+      toast.error('Failed to fetch payments. Please try again.');
     }
   };
 
   const handlePaymentSubmit = async (e) => {
     e.preventDefault();
     if (!selectedTraineeId || !amount || !monthYear) {
-      alert('Please fill all fields');
+      toast.error('Please fill all fields');
       return;
     }
 
     const numericAmount = parseFloat(amount);
     if (isNaN(numericAmount)) {
-      alert('Please enter a valid amount');
+      toast.error('Please enter a valid amount');
       return;
     }
 
     const trainee = trainees.find((t) => t._id === selectedTraineeId);
     if (!trainee) {
-      alert('Trainee not found');
+      toast.error('Trainee not found');
       return;
     }
 
     if (numericAmount < trainee.package.packageAmount) {
-      alert(`Please enter at least ${trainee.package.packageAmount} to pay.`);
+      toast.error(`Please enter at least ${trainee.package.packageAmount} to pay.`);
       return;
     }
 
@@ -79,7 +83,7 @@ const PaymentPage = () => {
     });
 
     if (existingPayment) {
-      alert(`Trainee has already made a payment for ${formattedMonthYear}`);
+      toast.error(`Trainee has already made a payment for ${formattedMonthYear}`);
       return;
     }
 
@@ -105,9 +109,10 @@ const PaymentPage = () => {
       setSelectedTraineeId('');
       setAmount('');
       setMonthYear(new Date());
+      toast.success('Payment made successfully');
     } catch (error) {
       console.error('Error making payment:', error);
-      alert('Failed to make payment. Please try again.');
+      toast.error('Failed to make payment. Please try again.');
     }
   };
 
@@ -122,9 +127,10 @@ const PaymentPage = () => {
       }
 
       setPayments(payments.filter((payment) => payment._id !== paymentId));
+      toast.success('Payment deleted successfully');
     } catch (error) {
       console.error('Error deleting payment:', error);
-      alert('Failed to delete payment. Please try again.');
+      toast.error('Failed to delete payment. Please try again.');
     }
   };
 
@@ -214,6 +220,7 @@ const PaymentPage = () => {
           </div>
         </div>
       </div>
+      <ToastContainer />
     </>
   );
 };

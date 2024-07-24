@@ -3,6 +3,9 @@ import TextField from '../components/TextField';
 import Button from '../components/Button';
 import TraineesTable from '../components/TraineesTable';
 import Navbar from '../components/Navbar';
+import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
+import { toast, ToastContainer } from 'react-toastify'; // Import toast and ToastContainer
+import 'react-toastify/dist/ReactToastify.css'; // Import toast CSS
 
 const TraineesPage = () => {
   const [traineeId, setTraineeId] = useState('');
@@ -30,6 +33,7 @@ const TraineesPage = () => {
       setPackages(data);
     } catch (error) {
       console.error('Error fetching packages:', error);
+      toast.error('Failed to fetch packages');
     }
   };
 
@@ -53,7 +57,7 @@ const TraineesPage = () => {
     if (value.length <= 11 || value === '') {
       setPhoneNo(value);
     } else {
-      alert('Please Enter a Valid Phone Number');
+      toast.warning('Please Enter a Valid Phone Number');
     }
   };
 
@@ -75,12 +79,12 @@ const TraineesPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-     // Check if traineeId already exists
-     const existingTrainee = trainees.find(trainee => trainee.traineeId === traineeId);
-     if (existingTrainee) {
-       alert(`Trainee with ID "${traineeId}" already exists. Please use a different Trainee ID.`);
-       return;
-     }
+    // Check if traineeId already exists
+    const existingTrainee = trainees.find(trainee => trainee.traineeId === traineeId);
+    if (existingTrainee) {
+      toast.error(`Trainee with ID "${traineeId}" already exists. Please use a different Trainee ID.`);
+      return;
+    }
 
     try {
       const response = await fetch('http://localhost:3002/api/trainees', {
@@ -107,9 +111,10 @@ const TraineesPage = () => {
       const newTrainee = await response.json();
       setTrainees([...trainees, newTrainee]);
       handleReset();
+      toast.success('Trainee added successfully!');
     } catch (error) {
       console.error('Error adding trainee:', error);
-      alert('Failed to add trainee. Please try again.');
+      toast.error('Failed to add trainee. Please try again.');
     }
   };
 
@@ -124,9 +129,10 @@ const TraineesPage = () => {
       }
 
       setTrainees(trainees.filter(trainee => trainee._id !== traineeId));
+      toast.success('Trainee deleted successfully!');
     } catch (error) {
       console.error('Error deleting trainee:', error);
-      alert('Failed to delete trainee. Please try again.');
+      toast.error('Failed to delete trainee. Please try again.');
     }
   };
 
@@ -142,6 +148,7 @@ const TraineesPage = () => {
       setCurrentPage(page);
     } catch (error) {
       console.error('Error fetching trainees:', error);
+      toast.error('Failed to fetch trainees');
     }
   };
 
@@ -164,6 +171,7 @@ const TraineesPage = () => {
     const selectedPackageObj = packages.find(pkg => pkg._id === selectedPackageId);
     setSelectedPackage(selectedPackageObj); // Set the selected package object
   };
+
 
   return (
     <>
@@ -321,7 +329,9 @@ const TraineesPage = () => {
                   <nav aria-label="Trainee Pagination">
                     <ul className="pagination mb-0">
                       <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
-                        <button className="page-link" onClick={() => handlePageChange(currentPage - 1)}>Previous</button>
+                        <button className="page-link" onClick={() => handlePageChange(currentPage - 1)}>
+                          <FaArrowLeft /> {/* Left arrow icon */}
+                        </button>
                       </li>
                       {Array.from({ length: totalPages }, (_, index) => (
                         <li key={index} className={`page-item ${currentPage === index + 1 ? 'active' : ''}`}>
@@ -329,7 +339,9 @@ const TraineesPage = () => {
                         </li>
                       ))}
                       <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
-                        <button className="page-link" onClick={() => handlePageChange(currentPage + 1)}>Next</button>
+                        <button className="page-link" onClick={() => handlePageChange(currentPage + 1)}>
+                          <FaArrowRight /> {/* Right arrow icon */}
+                        </button>
                       </li>
                     </ul>
                   </nav>
@@ -339,6 +351,7 @@ const TraineesPage = () => {
           </div>
         </div>
       </div>
+      <ToastContainer />
     </>
   );
 };

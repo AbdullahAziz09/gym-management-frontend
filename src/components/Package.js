@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from '../components/Navbar'; 
 import { MdEditCalendar } from "react-icons/md";
-
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'; // Import the CSS for toastify
 
 const Package = () => {
   const [packages, setPackages] = useState([]);
@@ -21,6 +22,7 @@ const Package = () => {
       setPackages(data);
     } catch (error) {
       console.error('Error fetching packages:', error);
+      toast.error('Failed to fetch packages. Please try again.');
     }
   };
 
@@ -40,8 +42,10 @@ const Package = () => {
 
       fetchPackages();
       updateAssociatedTrainees(packageId, updatedPackage);
+      toast.success('Package updated successfully');
     } catch (error) {
       console.error('Error updating package:', error);
+      toast.error('Failed to update package. Please try again.');
     }
   };
 
@@ -52,16 +56,22 @@ const Package = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(updatedPackage),
+        body: JSON.stringify({
+          packageName: updatedPackage.packageName,
+          packageAmount: updatedPackage.packageAmount,
+        }),
       });
-
+  
       if (!response.ok) {
         throw new Error('Failed to update associated trainees');
       }
     } catch (error) {
       console.error('Error updating associated trainees:', error);
+      toast.error('Failed to update associated trainees. Please try again.');
     }
   };
+  
+  
 
   const handleEditClick = (pkg) => {
     setSelectedPackage(pkg);
@@ -86,7 +96,7 @@ const Package = () => {
         <td>{pkg.packageName}</td>
         <td>{pkg.packageAmount}</td>
         <td>
-        <MdEditCalendar 
+          <MdEditCalendar 
             style={{ cursor: 'pointer', fontSize: '1.5rem', color: '#007bff' }} 
             onClick={() => handleEditClick(pkg)}
           />
@@ -157,6 +167,7 @@ const Package = () => {
           </div>
         </div>
       </div>
+      <ToastContainer /> {/* Add this to display toast notifications */}
     </>
   );
 };
